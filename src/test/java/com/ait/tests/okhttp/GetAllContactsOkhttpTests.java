@@ -53,5 +53,17 @@ public class GetAllContactsOkhttpTests {
        // Assert.assertEquals(errorDto.getMessage(),"Contact with id: 000 not found in your contacts!");
        // System.out.println(errorDto.getMessage());
     }
+    @Test
+    public void getAllContactsWithWrongToken() throws IOException {
+        Request request = new Request.Builder()
+                .url("https://contactapp-telran-backend.herokuapp.com/v1/contacts")
+                .get()
+                .addHeader("Authorization", "hhhhhhhh")
+                .build();
+        Response response = client.newCall(request).execute();
+ErrorDto errorDto = gson.fromJson(response.body().string(), ErrorDto.class);
+Assert.assertEquals(errorDto.getError(),"Unauthorized");
+    }
+
     }
 

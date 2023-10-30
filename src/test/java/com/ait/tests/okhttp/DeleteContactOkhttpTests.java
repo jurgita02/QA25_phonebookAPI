@@ -89,7 +89,32 @@ public class DeleteContactOkhttpTests {
         Assert.assertEquals(errorDto.getMessage(),"Contact with id: 000 not found in your contacts!");
         System.out.println(errorDto.getMessage());
 
-    }
+    }  @Test
+    public void deleteContactByIDWrongTokenNegativeTest() throws IOException {
+        Request request = new Request.Builder()
+                .url("https://contactapp-telran-backend.herokuapp.com/v1/contacts/" + id)
+                .delete()
+                .addHeader("Authorization", "aaaaaaa")
+                .build();
 
+        Response response = client.newCall(request).execute();
+        Assert.assertEquals(response.code(),401);
+        ErrorDto errorDto=gson.fromJson(response.body().string(), ErrorDto.class);
+        Assert.assertEquals(errorDto.getError(),"Unauthorized");
+
+    } @Test
+    public void deleteContactByIDNotFoundNegativeTest() throws IOException {
+        Request request = new Request.Builder()
+                .url("https://contactapp-telran-backend.herokuapp.com/v1/contacts/" +123)
+                .delete()
+                .addHeader("Authorization", token)
+                .build();
+
+        Response response = client.newCall(request).execute();
+        Assert.assertEquals(response.code(),400);
+        ErrorDto errorDto=gson.fromJson(response.body().string(), ErrorDto.class);
+        Assert.assertEquals(errorDto.getError(),"Bad Request");
+Assert.assertEquals(errorDto.getMessage(),"Contact with id: 123 not found in your contacts!");
+    }
     }
 
